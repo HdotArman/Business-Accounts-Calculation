@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Business Accounts Calculation</title>
+<style>
+:root{
+--bg:radial-gradient(60% 50% at 12% 8%,#bfe3ee 0,transparent 70%),radial-gradient(50% 45% at 92% 20%,#d9d2f5 0,transparent 70%),radial-gradient(55% 50% at 50% 100%,#c4eadf 0,transparent 70%),linear-gradient(160deg,#eaf2f7,#e6eef3);
+--ink:#0f1f2b;--muted:#4d6272;--glass:rgba(255,255,255,.55);--glass-line:rgba(255,255,255,.85);--field:rgba(255,255,255,.75);--row:rgba(15,31,43,.09);
+--accent:#0e7c86;--accent-ink:#fff;--warn:#9a4a08;--c1:#0e7c86;--c2:#5b6fd6;--c3:#d28a2b;--shadow:0 8px 30px rgba(30,60,90,.12);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:radial-gradient(60% 50% at 12% 8%,#12394a 0,transparent 70%),radial-gradient(50% 45% at 92% 20%,#2a2252 0,transparent 70%),radial-gradient(55% 50% at 50% 100%,#0f3a33 0,transparent 70%),linear-gradient(160deg,#0a141c,#0d1822);
+--ink:#e8f1f5;--muted:#9fb3bf;--glass:rgba(255,255,255,.07);--glass-line:rgba(255,255,255,.15);--field:rgba(255,255,255,.08);--row:rgba(255,255,255,.1);
+--accent:#46c2c9;--accent-ink:#04262a;--warn:#f0a35e;--c1:#46c2c9;--c2:#8b9bf0;--c3:#e8a84f;--shadow:0 8px 30px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{
+--bg:radial-gradient(60% 50% at 12% 8%,#12394a 0,transparent 70%),radial-gradient(50% 45% at 92% 20%,#2a2252 0,transparent 70%),radial-gradient(55% 50% at 50% 100%,#0f3a33 0,transparent 70%),linear-gradient(160deg,#0a141c,#0d1822);
+--ink:#e8f1f5;--muted:#9fb3bf;--glass:rgba(255,255,255,.07);--glass-line:rgba(255,255,255,.15);--field:rgba(255,255,255,.08);--row:rgba(255,255,255,.1);
+--accent:#46c2c9;--accent-ink:#04262a;--warn:#f0a35e;--c1:#46c2c9;--c2:#8b9bf0;--c3:#e8a84f;--shadow:0 8px 30px rgba(0,0,0,.35)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);min-height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);background-attachment:fixed;color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.5}
+main{max-width:620px;margin:0 auto;padding:26px 16px 44px}
+h1{font-size:1.55rem;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 16px}
+.glass{background:var(--glass);border:1px solid var(--glass-line);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
+.banner{border-left:4px solid var(--warn);font-size:.88rem}
+.banner b{color:var(--warn)}
+label{display:block;font-weight:600;font-size:.9rem;margin:0 0 5px}
+input{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--glass-line);border-radius:12px;padding:12px 14px;margin-bottom:14px;transition:box-shadow .2s,border-color .2s}
+input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 10px}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);margin-bottom:12px}
+table{width:100%;border-collapse:collapse}
+td{padding:9px 0;border-bottom:1px solid var(--row)}
+td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+td small{display:block;color:var(--muted);font-weight:400}
+tr.strong td{font-weight:700;border-bottom:2px solid var(--row)}
+tr.last td{border-bottom:0;font-size:1.1rem;color:var(--accent)}
+h2{font-size:1.02rem;margin:0 0 8px}
+.bar{display:flex;height:14px;border-radius:99px;overflow:hidden;margin:6px 0 12px;background:var(--row)}
+.bar span{transition:width .35s ease}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:11px 16px;cursor:pointer;transition:transform .15s,opacity .15s}
+button:hover{opacity:.92}button:active{transform:scale(.97)}
+button.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note{color:var(--muted);font-size:.82rem}.warn{color:var(--warn)}
+</style>
+</head>
+<body>
+<main>
+<h1>Business Accounts Calculation</h1>
+<p class="sub">Project the year’s sales, costs and capital use from two inputs.</p>
+
+<div class="glass banner"><b>Projection only.</b> These are estimates built from the assumptions below. They are not actual accounts. Anything filed with NBR must come from real records such as sales books, purchase invoices and stock counts.</div>
+
+<div class="glass">
+  <div class="grid">
+    <div><label for="inc">Income, financial year (Tk)</label><input id="inc" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 500000"></div>
+    <div><label for="cap">Capital, last financial year (Tk)</label><input id="cap" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 1000000"></div>
+  </div>
+  <details>
+    <summary>Assumptions (change if needed)</summary>
+    <div class="grid">
+      <div><label for="mult">Sales = income ×</label><input id="mult" type="number" step="any" value="10"></div>
+      <div><label for="gm">Gross margin on sales (%)</label><input id="gm" type="number" step="any" value="15"></div>
+    </div>
+    <label for="div">General expenses = gross income ÷</label>
+    <input id="div" type="number" step="any" value="3">
+    <div class="grid3">
+      <div><label for="p1">Cash/Bank %</label><input id="p1" type="number" step="any" value="20"></div>
+      <div><label for="p2">Inventory %</label><input id="p2" type="number" step="any" value="70"></div>
+      <div><label for="p3">Other %</label><input id="p3" type="number" step="any" value="10"></div>
+    </div>
+    <p class="note warn" id="psum"></p>
+  </details>
+</div>
+
+<div class="glass">
+  <h2>Projected income statement</h2>
+  <table id="stmt"></table>
+</div>
+
+<div class="glass">
+  <h2>Capital distribution</h2>
+  <div class="bar" id="bar"></div>
+  <table id="cap-tbl"></table>
+</div>
+
+<div class="row">
+  <button id="copy" type="button">Copy summary</button>
+  <button id="reset" type="button" class="alt">Reset</button>
+</div>
+<p class="note" id="msg" aria-live="polite"></p>
+</main>
+
+<script>
+var $ = function(id){return document.getElementById(id)};
+var num = function(id){var v = parseFloat($(id).value); return isFinite(v) ? v : 0};
+var fmt = function(n){return "Tk " + Math.round(n).toLocaleString("en-IN")};
+var COLORS = ["var(--c1)","var(--c2)","var(--c3)"];
+var NAMES = ["Cash in hand / Bank","Inventory","Other assets"];
+
+function calc(){
+  var inc = Math.max(0,num("inc")), cap = Math.max(0,num("cap"));
+  var sales = inc*num("mult");
+  var cogs = sales - sales*num("gm")/100;   // sales less margin
+  var gross = sales - cogs;
+  var d = num("div") || 1;
+  var exp = gross/d;
+  var p = [num("p1"),num("p2"),num("p3")];
+  return {inc:inc,cap:cap,sales:sales,cogs:cogs,gross:gross,exp:exp,net:gross-exp,p:p,parts:p.map(function(x){return cap*x/100}),psum:p[0]+p[1]+p[2]};
+}
+
+function render(){
+  var r = calc();
+  $("stmt").innerHTML =
+    '<tr class="strong"><td>Total sales</td><td>'+fmt(r.sales)+'</td></tr>'+
+    '<tr><td>Cost of goods</td><td>'+fmt(r.cogs)+'</td></tr>'+
+    '<tr class="strong"><td>Gross income</td><td>'+fmt(r.gross)+'</td></tr>'+
+    '<tr><td>General expenses</td><td>'+fmt(r.exp)+'</td></tr>'+
+    '<tr class="strong last"><td>Net income<small>Gross income less general expenses</small></td><td>'+fmt(r.net)+'</td></tr>';
+  var bar = "", rows = "";
+  for(var i=0;i<3;i++){
+    bar += '<span style="width:'+Math.max(0,r.p[i])+'%;background:'+COLORS[i]+'"></span>';
+    rows += '<tr><td><span class="dot" style="background:'+COLORS[i]+'"></span>'+NAMES[i]+'<small>'+r.p[i]+'% of capital</small></td><td>'+fmt(r.parts[i])+'</td></tr>';
+  }
+  rows += '<tr class="strong last"><td>Total capital</td><td>'+fmt(r.cap)+'</td></tr>';
+  $("bar").innerHTML = bar; $("cap-tbl").innerHTML = rows;
+  $("psum").textContent = Math.abs(r.psum-100) > 0.001 ? "Capital percentages add up to "+r.psum+"%, not 100%." : "";
+}
+
+function summary(){
+  var r = calc();
+  return "Business Accounts Calculation (PROJECTION, not actual accounts)\n"+
+    "Total sales: "+fmt(r.sales)+"\nCost of goods: "+fmt(r.cogs)+"\nGross income: "+fmt(r.gross)+
+    "\nGeneral expenses: "+fmt(r.exp)+"\nNet income: "+fmt(r.net)+"\n\n"+
+    NAMES[0]+": "+fmt(r.parts[0])+"\n"+NAMES[1]+": "+fmt(r.parts[1])+"\n"+NAMES[2]+": "+fmt(r.parts[2])+"\nTotal capital: "+fmt(r.cap);
+}
+
+["inc","cap","mult","gm","div","p1","p2","p3"].forEach(function(id){$(id).addEventListener("input",render)});
+$("reset").addEventListener("click",function(){
+  var d = {inc:"",cap:"",mult:10,gm:15,div:3,p1:20,p2:70,p3:10};
+  for(var k in d){$(k).value = d[k]}
+  $("msg").textContent = ""; render();
+});
+$("copy").addEventListener("click",function(){
+  var done = function(ok){$("msg").textContent = ok ? "Copied." : "Copy didn’t work. Select the tables and copy by hand."};
+  try{ navigator.clipboard.writeText(summary()).then(function(){done(true)},function(){done(false)}) }catch(e){done(false)}
+});
+render();
+</script>
+</body>
+</html>
